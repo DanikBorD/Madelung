@@ -1,1 +1,6 @@
 D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\bin\Debug\build_and_calc_Madelung.exe.config
+D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\bin\Debug\build_and_calc_Madelung.exe
+D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\bin\Debug\build_and_calc_Madelung.pdb
+D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\obj\Debug\build_and_calc_Madelung.csprojResolveAssemblyReference.cache
+D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\obj\Debug\build_and_calc_Madelung.exe
+D:\C#\build_and_calc_Madelung\build_and_calc_Madelung\obj\Debug\build_and_calc_Madelung.pdb
