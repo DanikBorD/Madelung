@@ -45,25 +45,41 @@ namespace build_and_calc_Madelung
 
 
             Console.WriteLine("Введите параметры кристаллической решетки, например, 2.3;5.6;7.8" + Environment.NewLine);
+            param_a = 0.4889;
+            param_b = 0.4889;
+            param_c = 0.4889;
 
-            params_str = Console.ReadLine();
-            param_a = Convert.ToDouble(params_str.Split(';')[0]);
-            param_b = Convert.ToDouble(params_str.Split(';')[1]);
-            param_c = Convert.ToDouble(params_str.Split(';')[2]);
+            //!!!
+            //params_str = Console.ReadLine();
+            //param_a = Convert.ToDouble(params_str.Split(';')[0]);
+            //param_b = Convert.ToDouble(params_str.Split(';')[1]);
+            //param_c = Convert.ToDouble(params_str.Split(';')[2]);
 
             Console.WriteLine("Введите координаты X, Y, Z и заряд в данной точке (например, 7.53;3.67;5.41;8). Для окончания введите \"конец\"" + Environment.NewLine);
 
-            while (true)
-            {
-                Console.WriteLine("Введите координаты: ");
-                tmp = Console.ReadLine();
 
-                if (tmp == "конец") break;
 
-                ions.Add(new Ion(tmp));
+            ions.Add(new Ion("0;0;0;1,9"));
+            ions.Add(new Ion("0,24445;0;0;-1,9"));
+            ions.Add(new Ion("0,24445;0,24445;0;1,9"));
+            ions.Add(new Ion("0;0,24445;0;-1,9"));
+            ions.Add(new Ion("0;0;0,24445;-1,9"));
+            ions.Add(new Ion("0,24445;0;0,24445;1,9"));
+            ions.Add(new Ion("0;0,24445;0,24445;1,9"));
+            ions.Add(new Ion("0,24445;0,24445;0,24445;-1,9"));
+            counter = 8;
+            //!!!
+            //while (true)
+            //{
+            //    Console.WriteLine("Введите координаты: ");
+            //    tmp = Console.ReadLine();
 
-                counter++;
-            }
+            //    if (tmp == "конец") break;
+
+            //    ions.Add(new Ion(tmp));
+
+            //    counter++;
+            //}
 
             //if(tmp.Split(';')[0].Contains('-'))
 
@@ -107,35 +123,57 @@ namespace build_and_calc_Madelung
             z_ = ions.First().z;
             q_ = ions.First().q;
 
-            foreach(var ion in ions)
+            
+
+            for (var k = 0; k < ions.Count; k++)
             {
-                if (ion == ions.First()) continue;
 
-                double x = ion.x;
-                double y = ion.y;
-                double z = ion.z;
-                double q = ion.q;
+                double M_ = 0;
 
-                ion.r = r_tmpCalc(x_, y_, z_, x, y, z);
-                //r_tmp_list.Add(r_tmp);
+                foreach (var ion in ions)
+                {
+                    if (ion == ions[k]) continue;
 
-                if (q_ * q < 0 && r_min > ion.r)
-                    r_min = ion.r;
+                    double x = ion.x;
+                    double y = ion.y;
+                    double z = ion.z;
+                    double q = ion.q;
+
+                    ion.r = r_tmpCalc(x_, y_, z_, x, y, z);
+                    //r_tmp_list.Add(r_tmp);
+
+                    if (q_ * q < 0 && r_min > ion.r)
+                        r_min = ion.r;
+                }
+
+                foreach (var ion in ions)
+                {
+                    if (ion == ions[k]) continue;
+
+                    //if(q_ * ion.q < 0)
+                    M_+= ion.q * r_min / ion.r;
+                }
+
+                M += M_;
             }
 
-            foreach(var ion in ions)
-            {
-                if (ion == ions.First()) continue;
-
-                M += ion.q * r_min / ion.r;
-            }
+            M = M / ions.Count;
+           
 
             foreach (var item in ions.Take(20))
                 Console.WriteLine("x = " + item.x.ToString() + ", y = " + item.y.ToString() + ", z = " + 
                     item.z.ToString() + ", q = " + item.q.ToString());
 
             Console.WriteLine("r_min = " + r_min.ToString());
-            Console.WriteLine("Постоянная Маделунга = " + M.ToString());
+            Console.WriteLine("Постоянная Маделунга = " + M.ToString() + Environment.NewLine);
+
+            foreach (var ion in ions.Take(20))
+            {
+                if (ion == ions.First()) continue;
+
+                //if(q_ * ion.q < 0)
+                Console.WriteLine("q = " + ion.q + ", r_min = " + r_min + ", r = " + ion.r + ", M = " + (ion.q * r_min / ion.r).ToString() + Environment.NewLine);
+            }
 
             Console.ReadKey();
 
