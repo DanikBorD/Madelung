@@ -145,7 +145,7 @@ namespace build_and_calc_Madelung
 
             foreach(var ion in ions)
             {
-                if (ion == middle_ion) continue;
+                if (ion.id == middle_ion.id) continue;
 
                 M += ion.q * r_min / ion.r;
             }
