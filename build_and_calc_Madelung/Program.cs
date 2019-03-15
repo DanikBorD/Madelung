@@ -36,6 +36,8 @@ namespace build_and_calc_Madelung
             double r_min = 100000;
             double r_tmp = 0;
 
+            Ion middle_ion;
+
             //-----------
 
             List<Ion> ions = new List<Ion>();
@@ -46,24 +48,38 @@ namespace build_and_calc_Madelung
 
             Console.WriteLine("Введите параметры кристаллической решетки, например, 2.3;5.6;7.8" + Environment.NewLine);
 
-            params_str = Console.ReadLine();
-            param_a = Convert.ToDouble(params_str.Split(';')[0]);
-            param_b = Convert.ToDouble(params_str.Split(';')[1]);
-            param_c = Convert.ToDouble(params_str.Split(';')[2]);
+            param_a = 0.4889;
+            param_b = 0.4889;
+            param_c = 0.4889;
+
+            //params_str = Console.ReadLine();
+            //param_a = Convert.ToDouble(params_str.Split(';')[0]);
+            //param_b = Convert.ToDouble(params_str.Split(';')[1]);
+            //param_c = Convert.ToDouble(params_str.Split(';')[2]);
 
             Console.WriteLine("Введите координаты X, Y, Z и заряд в данной точке (например, 7.53;3.67;5.41;8). Для окончания введите \"конец\"" + Environment.NewLine);
 
-            while (true)
-            {
-                Console.WriteLine("Введите координаты: ");
-                tmp = Console.ReadLine();
+            //while (true)
+            //{
+            //    Console.WriteLine("Введите координаты: ");
+            //    tmp = Console.ReadLine();
 
-                if (tmp == "конец") break;
+            //    if (tmp == "конец") break;
 
-                ions.Add(new Ion(tmp));
+            //    ions.Add(new Ion(tmp));
 
-                counter++;
-            }
+            //    counter++;
+            //}
+
+            ions.Add(new Ion("0;0;0;1,9", ions.Count));
+            ions.Add(new Ion("0,24445;0;0;-1,9", ions.Count));
+            ions.Add(new Ion("0,24445;0,24445;0;1,9", ions.Count));
+            ions.Add(new Ion("0;0,24445;0;-1,9", ions.Count));
+            ions.Add(new Ion("0;0;0,24445;-1,9", ions.Count));
+            ions.Add(new Ion("0,24445;0;0,24445;1,9", ions.Count));
+            ions.Add(new Ion("0;0,24445;0,24445;1,9", ions.Count));
+            ions.Add(new Ion("0,24445;0,24445;0,24445;-1,9", ions.Count));
+            counter = 8;
 
             //if(tmp.Split(';')[0].Contains('-'))
 
@@ -96,7 +112,7 @@ namespace build_and_calc_Madelung
                             double y = ions[k].y + param_b * al;
                             double z = ions[k].z + param_c * l;
                             double q = ions[k].q;
-                            ions.Add(new Ion(x, y, z, q));
+                            ions.Add(new Ion(x, y, z, q, ions.Count));
                         }                           
                     }
                 }
@@ -107,16 +123,20 @@ namespace build_and_calc_Madelung
             z_ = ions.First().z;
             q_ = ions.First().q;
 
+
+            middle_ion = ions.Where(c => c.x >= 5 * param_a && c.x <= 6 * param_a && c.y >= 5 * param_b && c.y <= 6 * param_b && c.z >= 5 * param_c && c.z <= 6 * param_c).First();
+           // middle_ion = ions[Convert.ToInt16(ions.Count/2)];
+
             foreach(var ion in ions)
             {
-                if (ion == ions.First()) continue;
+                if (ion.id == middle_ion.id) continue;
 
                 double x = ion.x;
                 double y = ion.y;
                 double z = ion.z;
                 double q = ion.q;
 
-                ion.r = r_tmpCalc(x_, y_, z_, x, y, z);
+                ion.r = r_tmpCalc(middle_ion.x, middle_ion.y, middle_ion.z, x, y, z);
                 //r_tmp_list.Add(r_tmp);
 
                 if (q_ * q < 0 && r_min > ion.r)
@@ -125,7 +145,7 @@ namespace build_and_calc_Madelung
 
             foreach(var ion in ions)
             {
-                if (ion == ions.First()) continue;
+                if (ion == middle_ion) continue;
 
                 M += ion.q * r_min / ion.r;
             }
