@@ -11,8 +11,7 @@ namespace build_and_calc_Madelung
     {
         static void Main(string[] args)
         {
-            #region variables
-            int dim = 10; // степень дробления одного кубика  
+            #region variables 
             int count = 10; // количество кубиков 
             string tmp = string.Empty;
             string charge = string.Empty;
@@ -65,6 +64,10 @@ namespace build_and_calc_Madelung
                 Console.WriteLine("x = " + item.x.ToString() + ", y = " + item.y.ToString() + ", z = " +
                     item.z.ToString() + ", q = " + item.q.ToString());
 
+            foreach (var ion in ions.Where(c => c.r == 0))
+                Console.WriteLine(Environment.NewLine + "Ион = (" + ion.x + "; " + ion.y + "; " + ion.z + ") c зарядом = " + ion.q + " и r = " + ion.r);
+            Console.WriteLine();
+            Console.WriteLine("Целевой ион = (" + middle_ion.x + "; " + middle_ion.y + "; " + middle_ion.z + ") c зарядом = " + middle_ion.q);
             Console.WriteLine();
             Console.WriteLine("Минимальное расстояние  = " + r_min.ToString());
             Console.WriteLine();
