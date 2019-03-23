@@ -12,7 +12,7 @@ namespace build_and_calc_Madelung
         static void Main(string[] args)
         {
             #region variables 
-            int count = 10; // количество кубиков 
+            int count = 50; // количество кубиков 
             string tmp = string.Empty;
             string charge = string.Empty;
             string params_str = string.Empty;
@@ -28,7 +28,9 @@ namespace build_and_calc_Madelung
             int counter = 0; // количество ионов в одном "кубике" 
             string path = "ion_params.txt";
             string full_path = Directory.GetCurrentDirectory() + "\\" + path;
-            #endregion
+
+            int[] arr = new int[100];
+             #endregion
 
             if (File.Exists(full_path))
             {
@@ -46,7 +48,9 @@ namespace build_and_calc_Madelung
             
             // Получение иона близкого к центру кристалла
             middle_ion = ions
-                .Where(c => c.x >= 5 * param_a && c.x <= 6 * param_a && c.y >= 5 * param_b && c.y <= 6 * param_b && c.z >= 5 * param_c && c.z <= 6 * param_c).First();
+                .Where(c => c.x >= Convert.ToInt16(count/2) * param_a && c.x <= Convert.ToInt16(count / 2)+1 * param_a 
+                && c.y >= Convert.ToInt16(count / 2) * param_b && c.y <= Convert.ToInt16(count / 2)+1 * param_b 
+                && c.z >= Convert.ToInt16(count / 2) * param_c && c.z <= Convert.ToInt16(count / 2)+1 * param_c).First();
 
             // Определение минимального расстояния между ионами в кристалле, имеющим разные по знаку заряды
             r_min = calcR(r_min, middle_ion, ions);
@@ -62,17 +66,19 @@ namespace build_and_calc_Madelung
             // Вывод значений в консоль
             foreach (var item in ions.Take(20))
                 Console.WriteLine("x = " + item.x.ToString() + ", y = " + item.y.ToString() + ", z = " +
-                    item.z.ToString() + ", q = " + item.q.ToString());
+                    item.z.ToString() + ", q = " + item.q.ToString() + ", id =" + item.id);
 
-            foreach (var ion in ions.Where(c => c.r == 0))
-                Console.WriteLine(Environment.NewLine + "Ион = (" + ion.x + "; " + ion.y + "; " + ion.z + ") c зарядом = " + ion.q + " и r = " + ion.r);
+            Console.WriteLine(Environment.NewLine + "Количество ионов с нулевым R: " + ions.Where(c => c.r == 0).Count());
             Console.WriteLine();
             Console.WriteLine("Целевой ион = (" + middle_ion.x + "; " + middle_ion.y + "; " + middle_ion.z + ") c зарядом = " + middle_ion.q);
             Console.WriteLine();
             Console.WriteLine("Минимальное расстояние  = " + r_min.ToString());
             Console.WriteLine();
             Console.WriteLine("Постоянная Маделунга = " + M.ToString());
-
+            Console.WriteLine();
+            Console.WriteLine("Количество ионов в кристалле = " + ions.Count());
+            Console.WriteLine();
+     
             Console.ReadKey();
 
         }
@@ -122,10 +128,11 @@ namespace build_and_calc_Madelung
 
         private static void readParameters(ref double param_a, ref double param_b, ref double param_c, List<Ion> ions, ref int counter, string path)
         {
+            int ind = 1;
             using (StreamReader reader = new StreamReader(path))
             {
                 while (!reader.EndOfStream)
-                {
+                { 
                     string line = reader.ReadLine();
                     string[] input = line.Split(';');
 
@@ -135,14 +142,18 @@ namespace build_and_calc_Madelung
                             param_a = Convert.ToDouble(input[0]);
                             param_b = Convert.ToDouble(input[1]);
                             param_c = Convert.ToDouble(input[2]);
+                            Console.WriteLine("Параметры: " + param_a + ", " + param_b + ", " + param_c);
+                            Console.WriteLine();
                             break;
                         case 4:
                             ions.Add(new Ion(line, ions.Count));
                             counter++;
                             break;
                         default:
+                            Console.WriteLine(Environment.NewLine+"Ошибка считывания!"+Environment.NewLine + " На строке " + ind);
                             break;
                     }
+                    ind++;
                 }
             }
         }
